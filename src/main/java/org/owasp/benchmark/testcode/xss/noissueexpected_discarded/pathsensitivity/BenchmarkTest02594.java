@@ -16,7 +16,7 @@
 * @created 2015
 */
 
-package org.owasp.benchmark.testcode.xss.noissueexpected;
+package org.owasp.benchmark.testcode.xss.noissueexpected_discarded.pathsensitivity;
 
 import java.io.IOException;
 
@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(value="/xss-05/BenchmarkTest02593")
-public class BenchmarkTest02593 extends HttpServlet {
+@WebServlet(value="/xss-05/BenchmarkTest02594")
+public class BenchmarkTest02594 extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -41,15 +41,15 @@ public class BenchmarkTest02593 extends HttpServlet {
 		response.setContentType("text/html;charset=UTF-8");
 
 		String queryString = request.getQueryString();
-		String paramval = "BenchmarkTest02593"+"=";
+		String paramval = "BenchmarkTest02594"+"=";
 		int paramLoc = -1;
 		if (queryString != null) paramLoc = queryString.indexOf(paramval);
 		if (paramLoc == -1) {
-			response.getWriter().println("getQueryString() couldn't find expected parameter '" + "BenchmarkTest02593" + "' in query string.");
+			response.getWriter().println("getQueryString() couldn't find expected parameter '" + "BenchmarkTest02594" + "' in query string.");
 			return;
 		}
 		
-		String param = queryString.substring(paramLoc + paramval.length()); // 1st assume "BenchmarkTest02593" param is last parameter in query string.
+		String param = queryString.substring(paramLoc + paramval.length()); // 1st assume "BenchmarkTest02594" param is last parameter in query string.
 		// And then check to see if its in the middle of the query string and if so, trim off what comes after.
 		int ampersandLoc = queryString.indexOf("&", paramLoc);
 		if (ampersandLoc != -1) {
@@ -60,8 +60,7 @@ public class BenchmarkTest02593 extends HttpServlet {
 		String bar = doSomething(request, param);
 		
 response.setHeader("X-XSS-Protection", "0");
-		Object[] obj = { "a", "b"};
-		response.getWriter().printf(bar,obj);
+		response.getWriter().println(bar.toCharArray());
 	}  // end doPost
 	
 		

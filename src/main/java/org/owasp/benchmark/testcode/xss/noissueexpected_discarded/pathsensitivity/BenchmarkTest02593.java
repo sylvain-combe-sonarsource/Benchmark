@@ -16,7 +16,7 @@
 * @created 2015
 */
 
-package org.owasp.benchmark.testcode.xss.noissueexpected;
+package org.owasp.benchmark.testcode.xss.noissueexpected_discarded.pathsensitivity;
 
 import java.io.IOException;
 
@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(value="/xss-05/BenchmarkTest02599")
-public class BenchmarkTest02599 extends HttpServlet {
+@WebServlet(value="/xss-05/BenchmarkTest02593")
+public class BenchmarkTest02593 extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -41,15 +41,15 @@ public class BenchmarkTest02599 extends HttpServlet {
 		response.setContentType("text/html;charset=UTF-8");
 
 		String queryString = request.getQueryString();
-		String paramval = "BenchmarkTest02599"+"=";
+		String paramval = "BenchmarkTest02593"+"=";
 		int paramLoc = -1;
 		if (queryString != null) paramLoc = queryString.indexOf(paramval);
 		if (paramLoc == -1) {
-			response.getWriter().println("getQueryString() couldn't find expected parameter '" + "BenchmarkTest02599" + "' in query string.");
+			response.getWriter().println("getQueryString() couldn't find expected parameter '" + "BenchmarkTest02593" + "' in query string.");
 			return;
 		}
 		
-		String param = queryString.substring(paramLoc + paramval.length()); // 1st assume "BenchmarkTest02599" param is last parameter in query string.
+		String param = queryString.substring(paramLoc + paramval.length()); // 1st assume "BenchmarkTest02593" param is last parameter in query string.
 		// And then check to see if its in the middle of the query string and if so, trim off what comes after.
 		int ampersandLoc = queryString.indexOf("&", paramLoc);
 		if (ampersandLoc != -1) {
@@ -60,7 +60,8 @@ public class BenchmarkTest02599 extends HttpServlet {
 		String bar = doSomething(request, param);
 		
 response.setHeader("X-XSS-Protection", "0");
-		response.getWriter().write(bar.toCharArray());
+		Object[] obj = { "a", "b"};
+		response.getWriter().printf(bar,obj);
 	}  // end doPost
 	
 		
@@ -68,11 +69,11 @@ response.setHeader("X-XSS-Protection", "0");
 
 		String bar;
 		
-		// Simple if statement that assigns constant to bar on true condition
-		int num = 86;
-		if ( (7*42) - num > 200 )
-		   bar = "This_should_always_happen"; 
-		else bar = param;
+		// Simple ? condition that assigns constant to bar on true condition
+		int num = 106;
+		
+		bar = (7*18) + num > 200 ? "This_should_always_happen" : param;
+		
 	
 		return bar;	
 	}
