@@ -16,7 +16,7 @@
 * @created 2015
 */
 
-package org.owasp.benchmark.testcode.pathtraver.issueexpected_discarded.bad_sink;
+package org.owasp.benchmark.testcode.pathtraver.issueexpected;
 
 import java.io.IOException;
 
@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(value="/pathtraver-02/BenchmarkTest02112")
-public class BenchmarkTest02112 extends HttpServlet {
+@WebServlet(value="/pathtraver-00/BenchmarkTest00222")
+public class BenchmarkTest00222 extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -39,41 +39,25 @@ public class BenchmarkTest02112 extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
-
-		String param = request.getParameter("BenchmarkTest02112");
-		if (param == null) param = "";
-
-		String bar = doSomething(request, param);
-		
-		String fileName = null;
-		java.io.FileOutputStream fos = null;
-
-		try {
-			fileName = org.owasp.benchmark.helpers.Utils.testfileDir + bar;
 	
-			fos = new java.io.FileOutputStream(fileName, false);
-	        response.getWriter().println(
-			"Now ready to write to file: " + org.owasp.esapi.ESAPI.encoder().encodeForHTML(fileName)
-);
-
-		} catch (Exception e) {
-			System.out.println("Couldn't open FileOutputStream on file: '" + fileName + "'");
-//			System.out.println("File exception caught and swallowed: " + e.getMessage());
-		} finally {
-			if (fos != null) {
-				try {
-					fos.close();
-                    fos = null;
-				} catch (Exception e) {
-					// we tried...
-				}
+		String param = "";
+		java.util.Enumeration<String> names = request.getHeaderNames();
+		while (names.hasMoreElements()) {
+			String name = (String) names.nextElement();
+			
+			if(org.owasp.benchmark.helpers.Utils.commonHeaders.contains(name)){
+				continue;
+			}
+			
+			java.util.Enumeration<String> values = request.getHeaders(name);
+			if (values != null && values.hasMoreElements()) {
+				param = name;
+				break;
 			}
 		}
-	}  // end doPost
-	
+		// Note: We don't URL decode header names because people don't normally do that
 		
-	private static String doSomething(HttpServletRequest request, String param) throws ServletException, IOException {
-
+		
 		String bar;
 		String guess = "ABC";
 		char switchTarget = guess.charAt(2);
@@ -94,7 +78,32 @@ public class BenchmarkTest02112 extends HttpServlet {
 		        bar = "bobs_your_uncle";
 		        break;
 		}
+		
+		
+		String fileName = null;
+		java.io.FileOutputStream fos = null;
+
+		try {
+			fileName = org.owasp.benchmark.helpers.Utils.testfileDir + bar;
 	
-		return bar;	
+			fos = new java.io.FileOutputStream(fileName);
+	        response.getWriter().println(
+			"Now ready to write to file: " + org.owasp.esapi.ESAPI.encoder().encodeForHTML(fileName)
+);
+
+   		} catch (Exception e) {
+			System.out.println("Couldn't open FileOutputStream on file: '" + fileName + "'");
+//			System.out.println("File exception caught and swallowed: " + e.getMessage());
+		} finally {
+			if (fos != null) {
+				try {
+					fos.close();
+                    fos = null;
+				} catch (Exception e) {
+					// we tried...
+				}
+			}
+		}
 	}
+	
 }

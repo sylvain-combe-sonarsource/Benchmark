@@ -16,7 +16,7 @@
 * @created 2015
 */
 
-package org.owasp.benchmark.testcode.pathtraver.issueexpected_discarded.bad_sink;
+package org.owasp.benchmark.testcode.pathtraver.issueexpected;
 
 import java.io.IOException;
 
@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(value="/pathtraver-02/BenchmarkTest02205")
-public class BenchmarkTest02205 extends HttpServlet {
+@WebServlet(value="/pathtraver-02/BenchmarkTest02383")
+public class BenchmarkTest02383 extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -40,13 +40,9 @@ public class BenchmarkTest02205 extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 
-		java.util.Map<String,String[]> map = request.getParameterMap();
-		String param = "";
-		if (!map.isEmpty()) {
-			String[] values = map.get("BenchmarkTest02205");
-			if (values != null) param = values[0];
-		}
-		
+		org.owasp.benchmark.helpers.SeparateClassRequest scr = new org.owasp.benchmark.helpers.SeparateClassRequest( request );
+		String param = scr.getTheParameter("BenchmarkTest02383");
+		if (param == null) param = "";
 
 		String bar = doSomething(request, param);
 		
@@ -79,13 +75,12 @@ public class BenchmarkTest02205 extends HttpServlet {
 		
 	private static String doSomething(HttpServletRequest request, String param) throws ServletException, IOException {
 
-		String bar;
-		
-		// Simple if statement that assigns param to bar on true condition
-		int num = 196;
-		if ( (500/42) + num > 200 )
-		   bar = param;
-		else bar = "This should never happen"; 
+		String bar = "safe!";
+		java.util.HashMap<String,Object> map53518 = new java.util.HashMap<String,Object>();
+		map53518.put("keyA-53518", "a-Value"); // put some stuff in the collection
+		map53518.put("keyB-53518", param); // put it in a collection
+		map53518.put("keyC", "another-Value"); // put some stuff in the collection
+		bar = (String)map53518.get("keyB-53518"); // get it back out
 	
 		return bar;	
 	}

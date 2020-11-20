@@ -16,7 +16,7 @@
 * @created 2015
 */
 
-package org.owasp.benchmark.testcode.pathtraver.issueexpected_discarded.bad_sink;
+package org.owasp.benchmark.testcode.pathtraver.issueexpected;
 
 import java.io.IOException;
 
@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(value="/pathtraver-01/BenchmarkTest01330")
-public class BenchmarkTest01330 extends HttpServlet {
+@WebServlet(value="/pathtraver-01/BenchmarkTest01497")
+public class BenchmarkTest01497 extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -40,13 +40,9 @@ public class BenchmarkTest01330 extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 	
-		java.util.Map<String,String[]> map = request.getParameterMap();
-		String param = "";
-		if (!map.isEmpty()) {
-			String[] values = map.get("BenchmarkTest01330");
-			if (values != null) param = values[0];
-		}
-		
+		org.owasp.benchmark.helpers.SeparateClassRequest scr = new org.owasp.benchmark.helpers.SeparateClassRequest( request );
+		String param = scr.getTheParameter("BenchmarkTest01497");
+		if (param == null) param = "";
 
 		String bar = new Test().doSomething(request, param);
 		
@@ -81,13 +77,17 @@ public class BenchmarkTest01330 extends HttpServlet {
 
         public String doSomething(HttpServletRequest request, String param) throws ServletException, IOException {
 
-		String bar;
-		
-		// Simple if statement that assigns param to bar on true condition
-		int num = 196;
-		if ( (500/42) + num > 200 )
-		   bar = param;
-		else bar = "This should never happen"; 
+		String bar = "";
+		if (param != null) {
+			java.util.List<String> valuesList = new java.util.ArrayList<String>( );
+			valuesList.add("safe");
+			valuesList.add( param );
+			valuesList.add( "moresafe" );
+			
+			valuesList.remove(0); // remove the 1st safe value
+			
+			bar = valuesList.get(0); // get the param value
+		}
 
             return bar;
         }

@@ -16,7 +16,7 @@
 * @created 2015
 */
 
-package org.owasp.benchmark.testcode.pathtraver.issueexpected_discarded.bad_sink;
+package org.owasp.benchmark.testcode.pathtraver.issueexpected;
 
 import java.io.IOException;
 
@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(value="/pathtraver-01/BenchmarkTest01032")
-public class BenchmarkTest01032 extends HttpServlet {
+@WebServlet(value="/pathtraver-01/BenchmarkTest01161")
+public class BenchmarkTest01161 extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -41,11 +41,13 @@ public class BenchmarkTest01032 extends HttpServlet {
 		response.setContentType("text/html;charset=UTF-8");
 	
 		String param = "";
-		if (request.getHeader("BenchmarkTest01032") != null) {
-			param = request.getHeader("BenchmarkTest01032");
+		java.util.Enumeration<String> headers = request.getHeaders("BenchmarkTest01161");
+		
+		if (headers != null && headers.hasMoreElements()) {
+			param = headers.nextElement(); // just grab first element
 		}
 		
-		// URL Decode the header value since req.getHeader() doesn't. Unlike req.getParameter().
+		// URL Decode the header value since req.getHeaders() doesn't. Unlike req.getParameters().
 		param = java.net.URLDecoder.decode(param, "UTF-8");
 
 		String bar = new Test().doSomething(request, param);
@@ -56,8 +58,8 @@ public class BenchmarkTest01032 extends HttpServlet {
 		try {
 			fileName = org.owasp.benchmark.helpers.Utils.testfileDir + bar;
 	
-			fos = new java.io.FileOutputStream(new java.io.File(fileName),false);
- 	       response.getWriter().println(
+			fos = new java.io.FileOutputStream(fileName, false);
+	        response.getWriter().println(
 			"Now ready to write to file: " + org.owasp.esapi.ESAPI.encoder().encodeForHTML(fileName)
 );
 
@@ -81,13 +83,17 @@ public class BenchmarkTest01032 extends HttpServlet {
 
         public String doSomething(HttpServletRequest request, String param) throws ServletException, IOException {
 
-		String bar;
-		
-		// Simple if statement that assigns param to bar on true condition
-		int num = 196;
-		if ( (500/42) + num > 200 )
-		   bar = param;
-		else bar = "This should never happen"; 
+		String bar = "";
+		if (param != null) {
+			java.util.List<String> valuesList = new java.util.ArrayList<String>( );
+			valuesList.add("safe");
+			valuesList.add( param );
+			valuesList.add( "moresafe" );
+			
+			valuesList.remove(0); // remove the 1st safe value
+			
+			bar = valuesList.get(0); // get the param value
+		}
 
             return bar;
         }

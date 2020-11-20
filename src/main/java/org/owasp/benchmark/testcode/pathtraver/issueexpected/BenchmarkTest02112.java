@@ -12,11 +12,11 @@
 * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 * GNU General Public License for more details.
 *
-* @author Dave Wichers <a href="https://www.aspectsecurity.com">Aspect Security</a>
+* @author Nick Sanidas <a href="https://www.aspectsecurity.com">Aspect Security</a>
 * @created 2015
 */
 
-package org.owasp.benchmark.testcode.pathtraver.issueexpected_discarded.bad_sink;
+package org.owasp.benchmark.testcode.pathtraver.issueexpected;
 
 import java.io.IOException;
 
@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(value="/pathtraver-01/BenchmarkTest01033")
-public class BenchmarkTest01033 extends HttpServlet {
+@WebServlet(value="/pathtraver-02/BenchmarkTest02112")
+public class BenchmarkTest02112 extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -39,16 +39,11 @@ public class BenchmarkTest01033 extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
-	
-		String param = "";
-		if (request.getHeader("BenchmarkTest01033") != null) {
-			param = request.getHeader("BenchmarkTest01033");
-		}
-		
-		// URL Decode the header value since req.getHeader() doesn't. Unlike req.getParameter().
-		param = java.net.URLDecoder.decode(param, "UTF-8");
 
-		String bar = new Test().doSomething(request, param);
+		String param = request.getParameter("BenchmarkTest02112");
+		if (param == null) param = "";
+
+		String bar = doSomething(request, param);
 		
 		String fileName = null;
 		java.io.FileOutputStream fos = null;
@@ -56,7 +51,7 @@ public class BenchmarkTest01033 extends HttpServlet {
 		try {
 			fileName = org.owasp.benchmark.helpers.Utils.testfileDir + bar;
 	
-			fos = new java.io.FileOutputStream(new java.io.File(fileName));
+			fos = new java.io.FileOutputStream(fileName, false);
 	        response.getWriter().println(
 			"Now ready to write to file: " + org.owasp.esapi.ESAPI.encoder().encodeForHTML(fileName)
 );
@@ -75,17 +70,31 @@ public class BenchmarkTest01033 extends HttpServlet {
 			}
 		}
 	}  // end doPost
-
 	
-    private class Test {
+		
+	private static String doSomething(HttpServletRequest request, String param) throws ServletException, IOException {
 
-        public String doSomething(HttpServletRequest request, String param) throws ServletException, IOException {
-
-		org.owasp.benchmark.helpers.ThingInterface thing = org.owasp.benchmark.helpers.ThingFactory.createThing();
-		String bar = thing.doSomething(param);
-
-            return bar;
-        }
-    } // end innerclass Test
-
-} // end DataflowThruInnerClass
+		String bar;
+		String guess = "ABC";
+		char switchTarget = guess.charAt(2);
+		
+		// Simple case statement that assigns param to bar on conditions 'A', 'C', or 'D'
+		switch (switchTarget) {
+		  case 'A':
+		        bar = param;
+		        break;
+		  case 'B': 
+		        bar = "bobs_your_uncle";
+		        break;
+		  case 'C':
+		  case 'D':        
+		        bar = param;
+		        break;
+		  default:
+		        bar = "bobs_your_uncle";
+		        break;
+		}
+	
+		return bar;	
+	}
+}

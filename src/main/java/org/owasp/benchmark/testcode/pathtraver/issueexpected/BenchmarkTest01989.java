@@ -12,11 +12,11 @@
 * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 * GNU General Public License for more details.
 *
-* @author Dave Wichers <a href="https://www.aspectsecurity.com">Aspect Security</a>
+* @author Nick Sanidas <a href="https://www.aspectsecurity.com">Aspect Security</a>
 * @created 2015
 */
 
-package org.owasp.benchmark.testcode.pathtraver.issueexpected_discarded.bad_sink;
+package org.owasp.benchmark.testcode.pathtraver.issueexpected;
 
 import java.io.IOException;
 
@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(value="/pathtraver-01/BenchmarkTest01238")
-public class BenchmarkTest01238 extends HttpServlet {
+@WebServlet(value="/pathtraver-02/BenchmarkTest01989")
+public class BenchmarkTest01989 extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -39,11 +39,25 @@ public class BenchmarkTest01238 extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
-	
-		String param = request.getParameter("BenchmarkTest01238");
-		if (param == null) param = "";
 
-		String bar = new Test().doSomething(request, param);
+		String param = "";
+		java.util.Enumeration<String> names = request.getHeaderNames();
+		while (names.hasMoreElements()) {
+			String name = (String) names.nextElement();
+			
+			if(org.owasp.benchmark.helpers.Utils.commonHeaders.contains(name)){
+				continue;
+			}
+			
+			java.util.Enumeration<String> values = request.getHeaders(name);
+			if (values != null && values.hasMoreElements()) {
+				param = name;
+				break;
+			}
+		}
+		// Note: We don't URL decode header names because people don't normally do that
+
+		String bar = doSomething(request, param);
 		
 		String fileName = null;
 		java.io.FileOutputStream fos = null;
@@ -51,8 +65,8 @@ public class BenchmarkTest01238 extends HttpServlet {
 		try {
 			fileName = org.owasp.benchmark.helpers.Utils.testfileDir + bar;
 	
-			fos = new java.io.FileOutputStream(new java.io.File(fileName),false);
- 	       response.getWriter().println(
+			fos = new java.io.FileOutputStream(fileName, false);
+	        response.getWriter().println(
 			"Now ready to write to file: " + org.owasp.esapi.ESAPI.encoder().encodeForHTML(fileName)
 );
 
@@ -70,26 +84,18 @@ public class BenchmarkTest01238 extends HttpServlet {
 			}
 		}
 	}  // end doPost
-
 	
-    private class Test {
+		
+	private static String doSomething(HttpServletRequest request, String param) throws ServletException, IOException {
 
-        public String doSomething(HttpServletRequest request, String param) throws ServletException, IOException {
-
-		String bar = "";
-		if (param != null) {
-			java.util.List<String> valuesList = new java.util.ArrayList<String>( );
-			valuesList.add("safe");
-			valuesList.add( param );
-			valuesList.add( "moresafe" );
-			
-			valuesList.remove(0); // remove the 1st safe value
-			
-			bar = valuesList.get(0); // get the param value
-		}
-
-            return bar;
-        }
-    } // end innerclass Test
-
-} // end DataflowThruInnerClass
+		String bar;
+		
+		// Simple ? condition that assigns param to bar on false condition
+		int num = 106;
+		
+		bar = (7*42) - num > 200 ? "This should never happen" : param;
+		
+	
+		return bar;	
+	}
+}

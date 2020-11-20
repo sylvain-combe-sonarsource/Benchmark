@@ -16,7 +16,7 @@
 * @created 2015
 */
 
-package org.owasp.benchmark.testcode.pathtraver.issueexpected_discarded.bad_sink;
+package org.owasp.benchmark.testcode.pathtraver.issueexpected;
 
 import java.io.IOException;
 
@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(value="/pathtraver-01/BenchmarkTest01116")
-public class BenchmarkTest01116 extends HttpServlet {
+@WebServlet(value="/pathtraver-01/BenchmarkTest01033")
+public class BenchmarkTest01033 extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -41,21 +41,12 @@ public class BenchmarkTest01116 extends HttpServlet {
 		response.setContentType("text/html;charset=UTF-8");
 	
 		String param = "";
-		java.util.Enumeration<String> names = request.getHeaderNames();
-		while (names.hasMoreElements()) {
-			String name = (String) names.nextElement();
-			
-			if(org.owasp.benchmark.helpers.Utils.commonHeaders.contains(name)){
-				continue;
-			}
-			
-			java.util.Enumeration<String> values = request.getHeaders(name);
-			if (values != null && values.hasMoreElements()) {
-				param = name;
-				break;
-			}
+		if (request.getHeader("BenchmarkTest01033") != null) {
+			param = request.getHeader("BenchmarkTest01033");
 		}
-		// Note: We don't URL decode header names because people don't normally do that
+		
+		// URL Decode the header value since req.getHeader() doesn't. Unlike req.getParameter().
+		param = java.net.URLDecoder.decode(param, "UTF-8");
 
 		String bar = new Test().doSomething(request, param);
 		
@@ -63,18 +54,9 @@ public class BenchmarkTest01116 extends HttpServlet {
 		java.io.FileOutputStream fos = null;
 
 		try {
-			// Create the file first so the test won't throw an exception if it doesn't exist.
-			// Note: Don't actually do this because this method signature could cause a tool to find THIS file constructor 
-			// as a vuln, rather than the File signature we are trying to actually test.
-			// If necessary, just run the benchmark twice. The 1st run should create all the necessary files.
-			//new java.io.File(org.owasp.benchmark.helpers.Utils.testfileDir + bar).createNewFile();
-			
 			fileName = org.owasp.benchmark.helpers.Utils.testfileDir + bar;
 	
-	
-	        java.io.FileInputStream fileInputStream = new java.io.FileInputStream(fileName);
-	        java.io.FileDescriptor fd = fileInputStream.getFD();
-	        fos = new java.io.FileOutputStream(fd);
+			fos = new java.io.FileOutputStream(new java.io.File(fileName));
 	        response.getWriter().println(
 			"Now ready to write to file: " + org.owasp.esapi.ESAPI.encoder().encodeForHTML(fileName)
 );
@@ -99,17 +81,8 @@ public class BenchmarkTest01116 extends HttpServlet {
 
         public String doSomething(HttpServletRequest request, String param) throws ServletException, IOException {
 
-		String bar = "";
-		if (param != null) {
-			java.util.List<String> valuesList = new java.util.ArrayList<String>( );
-			valuesList.add("safe");
-			valuesList.add( param );
-			valuesList.add( "moresafe" );
-			
-			valuesList.remove(0); // remove the 1st safe value
-			
-			bar = valuesList.get(0); // get the param value
-		}
+		org.owasp.benchmark.helpers.ThingInterface thing = org.owasp.benchmark.helpers.ThingFactory.createThing();
+		String bar = thing.doSomething(param);
 
             return bar;
         }

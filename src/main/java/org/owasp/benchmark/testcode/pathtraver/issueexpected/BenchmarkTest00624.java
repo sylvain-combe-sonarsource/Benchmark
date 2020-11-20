@@ -16,7 +16,7 @@
 * @created 2015
 */
 
-package org.owasp.benchmark.testcode.pathtraver.issueexpected_discarded.bad_sink;
+package org.owasp.benchmark.testcode.pathtraver.issueexpected;
 
 import java.io.IOException;
 
@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(value="/pathtraver-00/BenchmarkTest00222")
-public class BenchmarkTest00222 extends HttpServlet {
+@WebServlet(value="/pathtraver-00/BenchmarkTest00624")
+public class BenchmarkTest00624 extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -40,44 +40,13 @@ public class BenchmarkTest00222 extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 	
-		String param = "";
-		java.util.Enumeration<String> names = request.getHeaderNames();
-		while (names.hasMoreElements()) {
-			String name = (String) names.nextElement();
-			
-			if(org.owasp.benchmark.helpers.Utils.commonHeaders.contains(name)){
-				continue;
-			}
-			
-			java.util.Enumeration<String> values = request.getHeaders(name);
-			if (values != null && values.hasMoreElements()) {
-				param = name;
-				break;
-			}
-		}
-		// Note: We don't URL decode header names because people don't normally do that
+		org.owasp.benchmark.helpers.SeparateClassRequest scr = new org.owasp.benchmark.helpers.SeparateClassRequest( request );
+		String param = scr.getTheParameter("BenchmarkTest00624");
+		if (param == null) param = "";
 		
 		
-		String bar;
-		String guess = "ABC";
-		char switchTarget = guess.charAt(2);
-		
-		// Simple case statement that assigns param to bar on conditions 'A', 'C', or 'D'
-		switch (switchTarget) {
-		  case 'A':
-		        bar = param;
-		        break;
-		  case 'B': 
-		        bar = "bobs_your_uncle";
-		        break;
-		  case 'C':
-		  case 'D':        
-		        bar = param;
-		        break;
-		  default:
-		        bar = "bobs_your_uncle";
-		        break;
-		}
+		org.owasp.benchmark.helpers.ThingInterface thing = org.owasp.benchmark.helpers.ThingFactory.createThing();
+		String bar = thing.doSomething(param);
 		
 		
 		String fileName = null;
@@ -86,12 +55,12 @@ public class BenchmarkTest00222 extends HttpServlet {
 		try {
 			fileName = org.owasp.benchmark.helpers.Utils.testfileDir + bar;
 	
-			fos = new java.io.FileOutputStream(fileName);
-	        response.getWriter().println(
+			fos = new java.io.FileOutputStream(new java.io.File(fileName),false);
+ 	       response.getWriter().println(
 			"Now ready to write to file: " + org.owasp.esapi.ESAPI.encoder().encodeForHTML(fileName)
 );
 
-   		} catch (Exception e) {
+		} catch (Exception e) {
 			System.out.println("Couldn't open FileOutputStream on file: '" + fileName + "'");
 //			System.out.println("File exception caught and swallowed: " + e.getMessage());
 		} finally {

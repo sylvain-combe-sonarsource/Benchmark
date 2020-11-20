@@ -1,5 +1,5 @@
 /**
-* OWASP Benchmark Project v1.2
+* OWASP Benchmark v1.2
 *
 * This file is part of the Open Web Application Security Project (OWASP)
 * Benchmark Project. For details, please see
@@ -16,7 +16,7 @@
 * @created 2015
 */
 
-package org.owasp.benchmark.testcode.pathtraver.issueexpected_discarded.bad_sink;
+package org.owasp.benchmark.testcode.pathtraver.issueexpected;
 
 import java.io.IOException;
 
@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(value="/pathtraver-01/BenchmarkTest01161")
-public class BenchmarkTest01161 extends HttpServlet {
+@WebServlet(value="/pathtraver-00/BenchmarkTest00045")
+public class BenchmarkTest00045 extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -38,27 +38,33 @@ public class BenchmarkTest01161 extends HttpServlet {
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// some code
 		response.setContentType("text/html;charset=UTF-8");
-	
-		String param = "";
-		java.util.Enumeration<String> headers = request.getHeaders("BenchmarkTest01161");
 		
-		if (headers != null && headers.hasMoreElements()) {
-			param = headers.nextElement(); // just grab first element
-		}
-		
-		// URL Decode the header value since req.getHeaders() doesn't. Unlike req.getParameters().
-		param = java.net.URLDecoder.decode(param, "UTF-8");
 
-		String bar = new Test().doSomething(request, param);
+		String[] values = request.getParameterValues("BenchmarkTest00045");
+		String param;
+		if (values != null && values.length > 0)
+		  param = values[0];
+		else param = "";
+
 		
 		String fileName = null;
 		java.io.FileOutputStream fos = null;
 
 		try {
-			fileName = org.owasp.benchmark.helpers.Utils.testfileDir + bar;
+			// Create the file first so the test won't throw an exception if it doesn't exist.
+			// Note: Don't actually do this because this method signature could cause a tool to find THIS file constructor 
+			// as a vuln, rather than the File signature we are trying to actually test.
+			// If necessary, just run the benchmark twice. The 1st run should create all the necessary files.
+			//new java.io.File(org.owasp.benchmark.helpers.Utils.testfileDir + param).createNewFile();
+			
+			fileName = org.owasp.benchmark.helpers.Utils.testfileDir + param;
 	
-			fos = new java.io.FileOutputStream(fileName, false);
+	
+	        java.io.FileInputStream fileInputStream = new java.io.FileInputStream(fileName);
+	        java.io.FileDescriptor fd = fileInputStream.getFD();
+	        fos = new java.io.FileOutputStream(fd);
 	        response.getWriter().println(
 			"Now ready to write to file: " + org.owasp.esapi.ESAPI.encoder().encodeForHTML(fileName)
 );
@@ -76,27 +82,6 @@ public class BenchmarkTest01161 extends HttpServlet {
 				}
 			}
 		}
-	}  // end doPost
-
+	}
 	
-    private class Test {
-
-        public String doSomething(HttpServletRequest request, String param) throws ServletException, IOException {
-
-		String bar = "";
-		if (param != null) {
-			java.util.List<String> valuesList = new java.util.ArrayList<String>( );
-			valuesList.add("safe");
-			valuesList.add( param );
-			valuesList.add( "moresafe" );
-			
-			valuesList.remove(0); // remove the 1st safe value
-			
-			bar = valuesList.get(0); // get the param value
-		}
-
-            return bar;
-        }
-    } // end innerclass Test
-
-} // end DataflowThruInnerClass
+}
