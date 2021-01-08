@@ -16,7 +16,7 @@
 * @created 2015
 */
 
-package org.owasp.benchmark.testcode.pathtraver.issueexpected_discarded.bad_sink;
+package org.owasp.benchmark.testcode.pathtraver.issueexpected;
 
 import java.io.IOException;
 
@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(value="/pathtraver-00/BenchmarkTest00627")
-public class BenchmarkTest00627 extends HttpServlet {
+@WebServlet(value="/pathtraver-00/BenchmarkTest00785")
+public class BenchmarkTest00785 extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -40,16 +40,30 @@ public class BenchmarkTest00627 extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
 	
-		org.owasp.benchmark.helpers.SeparateClassRequest scr = new org.owasp.benchmark.helpers.SeparateClassRequest( request );
-		String param = scr.getTheParameter("BenchmarkTest00627");
-		if (param == null) param = "";
-		
-		
-		String bar = "";
-		if (param != null) {
-			bar = new String( org.apache.commons.codec.binary.Base64.decodeBase64(
-			org.apache.commons.codec.binary.Base64.encodeBase64( param.getBytes() ) ));
+		String queryString = request.getQueryString();
+		String paramval = "BenchmarkTest00785"+"=";
+		int paramLoc = -1;
+		if (queryString != null) paramLoc = queryString.indexOf(paramval);
+		if (paramLoc == -1) {
+			response.getWriter().println("getQueryString() couldn't find expected parameter '" + "BenchmarkTest00785" + "' in query string.");
+			return;
 		}
+		
+		String param = queryString.substring(paramLoc + paramval.length()); // 1st assume "BenchmarkTest00785" param is last parameter in query string.
+		// And then check to see if its in the middle of the query string and if so, trim off what comes after.
+		int ampersandLoc = queryString.indexOf("&", paramLoc);
+		if (ampersandLoc != -1) {
+			param = queryString.substring(paramLoc + paramval.length(), ampersandLoc);
+		}
+		param = java.net.URLDecoder.decode(param, "UTF-8");
+		
+		
+		String bar = "safe!";
+		java.util.HashMap<String,Object> map59480 = new java.util.HashMap<String,Object>();
+		map59480.put("keyA-59480", "a-Value"); // put some stuff in the collection
+		map59480.put("keyB-59480", param); // put it in a collection
+		map59480.put("keyC", "another-Value"); // put some stuff in the collection
+		bar = (String)map59480.get("keyB-59480"); // get it back out
 		
 		
 		String fileName = null;

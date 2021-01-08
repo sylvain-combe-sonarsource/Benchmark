@@ -16,7 +16,7 @@
 * @created 2015
 */
 
-package org.owasp.benchmark.testcode.pathtraver.issueexpected_discarded.bad_sink;
+package org.owasp.benchmark.testcode.pathtraver.issueexpected;
 
 import java.io.IOException;
 
@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(value="/pathtraver-03/BenchmarkTest02564")
-public class BenchmarkTest02564 extends HttpServlet {
+@WebServlet(value="/pathtraver-03/BenchmarkTest02569")
+public class BenchmarkTest02569 extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -41,15 +41,15 @@ public class BenchmarkTest02564 extends HttpServlet {
 		response.setContentType("text/html;charset=UTF-8");
 
 		String queryString = request.getQueryString();
-		String paramval = "BenchmarkTest02564"+"=";
+		String paramval = "BenchmarkTest02569"+"=";
 		int paramLoc = -1;
 		if (queryString != null) paramLoc = queryString.indexOf(paramval);
 		if (paramLoc == -1) {
-			response.getWriter().println("getQueryString() couldn't find expected parameter '" + "BenchmarkTest02564" + "' in query string.");
+			response.getWriter().println("getQueryString() couldn't find expected parameter '" + "BenchmarkTest02569" + "' in query string.");
 			return;
 		}
 		
-		String param = queryString.substring(paramLoc + paramval.length()); // 1st assume "BenchmarkTest02564" param is last parameter in query string.
+		String param = queryString.substring(paramLoc + paramval.length()); // 1st assume "BenchmarkTest02569" param is last parameter in query string.
 		// And then check to see if its in the middle of the query string and if so, trim off what comes after.
 		int ampersandLoc = queryString.indexOf("&", paramLoc);
 		if (ampersandLoc != -1) {
@@ -65,12 +65,12 @@ public class BenchmarkTest02564 extends HttpServlet {
 		try {
 			fileName = org.owasp.benchmark.helpers.Utils.testfileDir + bar;
 	
-			fos = new java.io.FileOutputStream(new java.io.File(fileName),false);
- 	       response.getWriter().println(
+			fos = new java.io.FileOutputStream(fileName);
+	        response.getWriter().println(
 			"Now ready to write to file: " + org.owasp.esapi.ESAPI.encoder().encodeForHTML(fileName)
 );
 
-		} catch (Exception e) {
+   		} catch (Exception e) {
 			System.out.println("Couldn't open FileOutputStream on file: '" + fileName + "'");
 //			System.out.println("File exception caught and swallowed: " + e.getMessage());
 		} finally {

@@ -16,7 +16,7 @@
 * @created 2015
 */
 
-package org.owasp.benchmark.testcode.pathtraver.issueexpected_discarded.bad_sink;
+package org.owasp.benchmark.testcode.pathtraver.issueexpected;
 
 import java.io.IOException;
 
@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(value="/pathtraver-00/BenchmarkTest00785")
-public class BenchmarkTest00785 extends HttpServlet {
+@WebServlet(value="/pathtraver-00/BenchmarkTest00788")
+public class BenchmarkTest00788 extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -41,15 +41,15 @@ public class BenchmarkTest00785 extends HttpServlet {
 		response.setContentType("text/html;charset=UTF-8");
 	
 		String queryString = request.getQueryString();
-		String paramval = "BenchmarkTest00785"+"=";
+		String paramval = "BenchmarkTest00788"+"=";
 		int paramLoc = -1;
 		if (queryString != null) paramLoc = queryString.indexOf(paramval);
 		if (paramLoc == -1) {
-			response.getWriter().println("getQueryString() couldn't find expected parameter '" + "BenchmarkTest00785" + "' in query string.");
+			response.getWriter().println("getQueryString() couldn't find expected parameter '" + "BenchmarkTest00788" + "' in query string.");
 			return;
 		}
 		
-		String param = queryString.substring(paramLoc + paramval.length()); // 1st assume "BenchmarkTest00785" param is last parameter in query string.
+		String param = queryString.substring(paramLoc + paramval.length()); // 1st assume "BenchmarkTest00788" param is last parameter in query string.
 		// And then check to see if its in the middle of the query string and if so, trim off what comes after.
 		int ampersandLoc = queryString.indexOf("&", paramLoc);
 		if (ampersandLoc != -1) {
@@ -58,12 +58,8 @@ public class BenchmarkTest00785 extends HttpServlet {
 		param = java.net.URLDecoder.decode(param, "UTF-8");
 		
 		
-		String bar = "safe!";
-		java.util.HashMap<String,Object> map59480 = new java.util.HashMap<String,Object>();
-		map59480.put("keyA-59480", "a-Value"); // put some stuff in the collection
-		map59480.put("keyB-59480", param); // put it in a collection
-		map59480.put("keyC", "another-Value"); // put some stuff in the collection
-		bar = (String)map59480.get("keyB-59480"); // get it back out
+		org.owasp.benchmark.helpers.ThingInterface thing = org.owasp.benchmark.helpers.ThingFactory.createThing();
+		String bar = thing.doSomething(param);
 		
 		
 		String fileName = null;
@@ -72,12 +68,12 @@ public class BenchmarkTest00785 extends HttpServlet {
 		try {
 			fileName = org.owasp.benchmark.helpers.Utils.testfileDir + bar;
 	
-			fos = new java.io.FileOutputStream(fileName, false);
+			fos = new java.io.FileOutputStream(fileName);
 	        response.getWriter().println(
 			"Now ready to write to file: " + org.owasp.esapi.ESAPI.encoder().encodeForHTML(fileName)
 );
 
-		} catch (Exception e) {
+   		} catch (Exception e) {
 			System.out.println("Couldn't open FileOutputStream on file: '" + fileName + "'");
 //			System.out.println("File exception caught and swallowed: " + e.getMessage());
 		} finally {

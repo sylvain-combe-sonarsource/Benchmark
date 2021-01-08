@@ -12,11 +12,11 @@
 * even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 * GNU General Public License for more details.
 *
-* @author Dave Wichers <a href="https://www.aspectsecurity.com">Aspect Security</a>
+* @author Nick Sanidas <a href="https://www.aspectsecurity.com">Aspect Security</a>
 * @created 2015
 */
 
-package org.owasp.benchmark.testcode.pathtraver.issueexpected_discarded.bad_sink;
+package org.owasp.benchmark.testcode.pathtraver.issueexpected;
 
 import java.io.IOException;
 
@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(value="/pathtraver-01/BenchmarkTest01498")
-public class BenchmarkTest01498 extends HttpServlet {
+@WebServlet(value="/pathtraver-03/BenchmarkTest02564")
+public class BenchmarkTest02564 extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -39,30 +39,34 @@ public class BenchmarkTest01498 extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
-	
-		org.owasp.benchmark.helpers.SeparateClassRequest scr = new org.owasp.benchmark.helpers.SeparateClassRequest( request );
-		String param = scr.getTheParameter("BenchmarkTest01498");
-		if (param == null) param = "";
 
-		String bar = new Test().doSomething(request, param);
+		String queryString = request.getQueryString();
+		String paramval = "BenchmarkTest02564"+"=";
+		int paramLoc = -1;
+		if (queryString != null) paramLoc = queryString.indexOf(paramval);
+		if (paramLoc == -1) {
+			response.getWriter().println("getQueryString() couldn't find expected parameter '" + "BenchmarkTest02564" + "' in query string.");
+			return;
+		}
+		
+		String param = queryString.substring(paramLoc + paramval.length()); // 1st assume "BenchmarkTest02564" param is last parameter in query string.
+		// And then check to see if its in the middle of the query string and if so, trim off what comes after.
+		int ampersandLoc = queryString.indexOf("&", paramLoc);
+		if (ampersandLoc != -1) {
+			param = queryString.substring(paramLoc + paramval.length(), ampersandLoc);
+		}
+		param = java.net.URLDecoder.decode(param, "UTF-8");
+
+		String bar = doSomething(request, param);
 		
 		String fileName = null;
 		java.io.FileOutputStream fos = null;
 
 		try {
-			// Create the file first so the test won't throw an exception if it doesn't exist.
-			// Note: Don't actually do this because this method signature could cause a tool to find THIS file constructor 
-			// as a vuln, rather than the File signature we are trying to actually test.
-			// If necessary, just run the benchmark twice. The 1st run should create all the necessary files.
-			//new java.io.File(org.owasp.benchmark.helpers.Utils.testfileDir + bar).createNewFile();
-			
 			fileName = org.owasp.benchmark.helpers.Utils.testfileDir + bar;
 	
-	
-	        java.io.FileInputStream fileInputStream = new java.io.FileInputStream(fileName);
-	        java.io.FileDescriptor fd = fileInputStream.getFD();
-	        fos = new java.io.FileOutputStream(fd);
-	        response.getWriter().println(
+			fos = new java.io.FileOutputStream(new java.io.File(fileName),false);
+ 	       response.getWriter().println(
 			"Now ready to write to file: " + org.owasp.esapi.ESAPI.encoder().encodeForHTML(fileName)
 );
 
@@ -80,20 +84,31 @@ public class BenchmarkTest01498 extends HttpServlet {
 			}
 		}
 	}  // end doPost
-
 	
-    private class Test {
+		
+	private static String doSomething(HttpServletRequest request, String param) throws ServletException, IOException {
 
-        public String doSomething(HttpServletRequest request, String param) throws ServletException, IOException {
-
-		String bar = "";
-		if (param != null) {
-			bar = new String( org.apache.commons.codec.binary.Base64.decodeBase64(
-			org.apache.commons.codec.binary.Base64.encodeBase64( param.getBytes() ) ));
+		String bar;
+		String guess = "ABC";
+		char switchTarget = guess.charAt(2);
+		
+		// Simple case statement that assigns param to bar on conditions 'A', 'C', or 'D'
+		switch (switchTarget) {
+		  case 'A':
+		        bar = param;
+		        break;
+		  case 'B': 
+		        bar = "bobs_your_uncle";
+		        break;
+		  case 'C':
+		  case 'D':        
+		        bar = param;
+		        break;
+		  default:
+		        bar = "bobs_your_uncle";
+		        break;
 		}
-
-            return bar;
-        }
-    } // end innerclass Test
-
-} // end DataflowThruInnerClass
+	
+		return bar;	
+	}
+}

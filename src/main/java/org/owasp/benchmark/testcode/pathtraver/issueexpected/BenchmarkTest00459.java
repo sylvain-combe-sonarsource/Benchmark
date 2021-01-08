@@ -16,7 +16,7 @@
 * @created 2015
 */
 
-package org.owasp.benchmark.testcode.pathtraver.issueexpected_discarded.bad_sink;
+package org.owasp.benchmark.testcode.pathtraver.issueexpected;
 
 import java.io.IOException;
 
@@ -51,8 +51,9 @@ public class BenchmarkTest00459 extends HttpServlet {
 		
 		String bar = "";
 		if (param != null) {
-			bar = new String( org.apache.commons.codec.binary.Base64.decodeBase64(
-			org.apache.commons.codec.binary.Base64.encodeBase64( param.getBytes() ) ));
+            //bar = new String( org.apache.commons.codec.binary.Base64.decodeBase64(
+			//org.apache.commons.codec.binary.Base64.encodeBase64( param.getBytes() ) ));
+			bar = new String( param.getBytes() );
 		}
 		
 		

@@ -16,7 +16,7 @@
 * @created 2015
 */
 
-package org.owasp.benchmark.testcode.pathtraver.issueexpected_discarded.bad_sink;
+package org.owasp.benchmark.testcode.pathtraver.issueexpected;
 
 import java.io.IOException;
 
@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(value="/pathtraver-03/BenchmarkTest02569")
-public class BenchmarkTest02569 extends HttpServlet {
+@WebServlet(value="/pathtraver-00/BenchmarkTest00787")
+public class BenchmarkTest00787 extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -39,25 +39,32 @@ public class BenchmarkTest02569 extends HttpServlet {
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html;charset=UTF-8");
-
+	
 		String queryString = request.getQueryString();
-		String paramval = "BenchmarkTest02569"+"=";
+		String paramval = "BenchmarkTest00787"+"=";
 		int paramLoc = -1;
 		if (queryString != null) paramLoc = queryString.indexOf(paramval);
 		if (paramLoc == -1) {
-			response.getWriter().println("getQueryString() couldn't find expected parameter '" + "BenchmarkTest02569" + "' in query string.");
+			response.getWriter().println("getQueryString() couldn't find expected parameter '" + "BenchmarkTest00787" + "' in query string.");
 			return;
 		}
 		
-		String param = queryString.substring(paramLoc + paramval.length()); // 1st assume "BenchmarkTest02569" param is last parameter in query string.
+		String param = queryString.substring(paramLoc + paramval.length()); // 1st assume "BenchmarkTest00787" param is last parameter in query string.
 		// And then check to see if its in the middle of the query string and if so, trim off what comes after.
 		int ampersandLoc = queryString.indexOf("&", paramLoc);
 		if (ampersandLoc != -1) {
 			param = queryString.substring(paramLoc + paramval.length(), ampersandLoc);
 		}
 		param = java.net.URLDecoder.decode(param, "UTF-8");
-
-		String bar = doSomething(request, param);
+		
+		
+		String bar = "";
+		if (param != null) {
+            //bar = new String( org.apache.commons.codec.binary.Base64.decodeBase64(
+			//org.apache.commons.codec.binary.Base64.encodeBase64( param.getBytes() ) ));
+			bar = new String( param.getBytes() );
+		}
+		
 		
 		String fileName = null;
 		java.io.FileOutputStream fos = null;
@@ -83,32 +90,6 @@ public class BenchmarkTest02569 extends HttpServlet {
 				}
 			}
 		}
-	}  // end doPost
-	
-		
-	private static String doSomething(HttpServletRequest request, String param) throws ServletException, IOException {
-
-		String bar;
-		String guess = "ABC";
-		char switchTarget = guess.charAt(2);
-		
-		// Simple case statement that assigns param to bar on conditions 'A', 'C', or 'D'
-		switch (switchTarget) {
-		  case 'A':
-		        bar = param;
-		        break;
-		  case 'B': 
-		        bar = "bobs_your_uncle";
-		        break;
-		  case 'C':
-		  case 'D':        
-		        bar = param;
-		        break;
-		  default:
-		        bar = "bobs_your_uncle";
-		        break;
-		}
-	
-		return bar;	
 	}
+	
 }
